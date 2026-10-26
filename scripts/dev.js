@@ -4,8 +4,12 @@ const { spawn } = require('child_process');
 // 1. Den lokale AI-server i baggrunden.
 // 2. Expo i forgrunden, så Expo stadig kan vise QR-koden og bruge tastaturgenveje.
 // Når Expo stoppes (Ctrl+C), stoppes serveren også.
+//
+// Serveren lytter her på 0.0.0.0, så en telefon på samme Wi-Fi kan nå den.
+// Den er kun tilgængelig på lokalnetværket og ikke fra internettet.
 const server = spawn(process.execPath, ['--env-file-if-exists=server/.env', 'server/index.js'], {
   stdio: 'inherit',
+  env: { ...process.env, HOST: process.env.HOST || '0.0.0.0' },
 });
 
 const expo = spawn('npx', ['expo', 'start'], {

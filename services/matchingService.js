@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 import { getCareerCases } from './careerCaseService';
 import { EMPTY_PROFILE } from '../data/jobSeekerProfile';
@@ -10,13 +11,27 @@ import { EMPTY_PROFILE } from '../data/jobSeekerProfile';
 // Resultaterne gemmes med AsyncStorage, så et OpenAI-kald kun sker,
 // når brugeren selv beder om nye matches.
 //
-// Adressen på serveren:
-// - Web og iOS-simulator: localhost
-// - Android-emulator: 10.0.2.2 (emulatorens adresse til computeren)
-// - Fysisk telefon: start appen med EXPO_PUBLIC_API_URL=http://<computerens-IP>:3001 (se README)
-const API_URL =
-  process.env.EXPO_PUBLIC_API_URL ||
-  (Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001');
+// Adressen på serveren findes sådan:
+// 1. EXPO_PUBLIC_API_URL, hvis den er sat manuelt.
+// 2. Computerens IP-adresse fra Expo (hostUri, fx "192.168.1.22:8081"). En telefon kan ikke
+//    bruge "localhost", fordi det peger på telefonen selv. Serveren kører på samme computer
+//    som Expo, så jeg genbruger Expo's IP-adresse med serverens port.
+// 3. localhost på web, og 10.0.2.2 i Android-emulatoren (emulatorens adresse til computeren).
+function getApiUrl() {
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+
+  const hostUri = Constants.expoConfig?.hostUri;
+
+  if (Platform.OS !== 'web' && hostUri) {
+    return `http://${hostUri.split(':')[0]}:3001`;
+  }
+
+  return Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001';
+}
+
+const API_URL = getApiUrl();
 
 const TIMEOUT_MS = 60000;
 const CACHE_KEY = 'coreliance:matchCache';
