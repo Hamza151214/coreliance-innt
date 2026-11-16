@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
 
+import NextSteps from '../components/NextSteps';
 import { ui } from '../styles/components';
 import { screenStyles } from '../styles/screens';
 
@@ -27,11 +28,12 @@ function BulletList({ items }) {
   ));
 }
 
-export default function CareerCaseScreen({ route }) {
+export default function CareerCaseScreen({ route, navigation }) {
   // Den valgte career case bliver sendt gennem navigation.
   // Hvis brugeren kommer fra People Like Me, sendes "match" også med,
   // så jeg kan vise hvorfor casen blev foreslået.
-  const { careerCase, match } = route.params;
+  // isDemo er true, når matchet er et forudskrevet eksempel og ikke lavet af AI'en.
+  const { careerCase, match, isDemo } = route.params;
 
   // Prototypen har ingen CV-filer. Knappen viser derfor kun en forklaring.
   const showCV = () => {
@@ -64,7 +66,9 @@ export default function CareerCaseScreen({ route }) {
       {/* Forklaring på matchet – kun når casen er åbnet fra People Like Me */}
       {match ? (
         <View style={[ui.section, screenStyles.matchSection]}>
-          <Text style={ui.accentLabel}>AI-powered matching · {match.relevance}</Text>
+          <Text style={ui.accentLabel}>
+            {isDemo ? 'Example match, not AI-generated' : 'AI-powered matching'} · {match.relevance}
+          </Text>
           <Text style={ui.sectionTitle}>Why this case was suggested</Text>
 
           {match.summary ? <Text style={[ui.bodyText, ui.textSpacing]}>{match.summary}</Text> : null}
@@ -156,6 +160,14 @@ export default function CareerCaseScreen({ route }) {
           </View>
         </View>
       ) : null}
+
+      {/* Et konkret næste skridt: et (fiktivt) fællesskab for samme felt eller by */}
+      <NextSteps
+        fields={[careerCase.field]}
+        city={careerCase.location}
+        navigation={navigation}
+        origin="case"
+      />
 
       {/* CV-knappen er kun en placeholder i prototypen */}
       <View style={ui.section}>

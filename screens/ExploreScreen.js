@@ -3,6 +3,7 @@ import { View, Text, FlatList, Pressable } from 'react-native';
 
 import CareerCard from '../components/CareerCard';
 import { getCareerCases } from '../services/careerCaseService';
+import { loadIntroSeen, markIntroSeen } from '../services/onboardingService';
 import { ui } from '../styles/components';
 import { screenStyles } from '../styles/screens';
 
@@ -16,11 +17,31 @@ export default function ExploreScreen({ navigation }) {
   // Appen starter med "All", så alle career cases bliver vist.
   const [selectedFilter, setSelectedFilter] = useState('All');
 
+  // Velkomstkortet vises kun første gang. Det starter skjult, så det ikke
+  // blinker frem og forsvinder igen for brugere, der allerede har set det.
+  const [showIntro, setShowIntro] = useState(false);
+
   useEffect(() => {
     getCareerCases()
       .then(setCareerCases)
       .catch(() => setLoadFailed(true));
+
+    // Hvis lageret fejler, viser jeg bare ikke kortet. Det er ikke vigtigt nok til en fejlbesked.
+    loadIntroSeen()
+      .then((seen) => setShowIntro(!seen))
+      .catch(() => setShowIntro(false));
   }, []);
+
+  // Kortet lukkes med det samme. Hvis det ikke kan gemmes, vises det bare igen næste gang.
+  const closeIntro = () => {
+    setShowIntro(false);
+    markIntroSeen().catch(() => {});
+  };
+
+  const createProfile = () => {
+    closeIntro();
+    navigation.navigate('MyProfile');
+  };
 
   // Filtrene bygges ud fra de felter, der findes i data,
   // så jeg ikke skal vedligeholde en separat liste.
@@ -79,11 +100,39 @@ export default function ExploreScreen({ navigation }) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={ui.listContent}
         ListHeaderComponent={
-          <Text style={[ui.caption, screenStyles.exploreNote, loadFailed && ui.errorText]}>
-            {loadFailed
-              ? 'Career cases could not be loaded.'
-              : 'All career cases are fictional demonstration profiles made for this academic prototype.'}
-          </Text>
+          <>
+            {/* Kort velkomst ved første åbning: hvad appen kan, og én tydelig næste handling */}
+            {showIntro ? (
+              <View style={ui.section}>
+                <Text style={screenStyles.introTitle}>Welcome to CoReliance</Text>
+                <Text style={ui.bodyText}>
+                  See how other internationals found jobs in Denmark — then let AI find the
+                  stories most relevant to you.
+                </Text>
+
+                <Pressable
+                  style={({ pressed }) => [ui.primaryButton, pressed && ui.buttonPressed]}
+                  onPress={createProfile}
+                  accessibilityRole="button"
+                >
+                  <Text style={ui.primaryButtonText}>Create my profile</Text>
+                </Pressable>
+                <Pressable
+                  style={({ pressed }) => [screenStyles.textButton, pressed && ui.buttonPressed]}
+                  onPress={closeIntro}
+                  accessibilityRole="button"
+                >
+                  <Text style={screenStyles.textButtonText}>Browse first</Text>
+                </Pressable>
+              </View>
+            ) : null}
+
+            <Text style={[ui.caption, screenStyles.exploreNote, loadFailed && ui.errorText]}>
+              {loadFailed
+                ? 'Career cases could not be loaded.'
+                : 'All career cases are fictional demonstration profiles made for this academic prototype.'}
+            </Text>
+          </>
         }
         renderItem={({ item }) => (
           <CareerCard careerCase={item} onPress={() => openCareerCase(item)} />

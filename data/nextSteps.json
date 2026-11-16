@@ -1,0 +1,116 @@
+{
+  "groups": [
+    {
+      "id": "grp-data",
+      "name": "Data & Analytics Careers DK",
+      "purpose": "For internationals working in or aiming for data, BI and analytics roles in Denmark. Members share portfolio projects and honest job-search numbers.",
+      "fields": ["Data & Analytics", "IT & Software"],
+      "members": 184,
+      "topics": [
+        "Monthly thread: what did you ship this month?",
+        "Analyst jobs without Danish — how do you list A1 on a CV?"
+      ]
+    },
+    {
+      "id": "grp-finance",
+      "name": "Finance Careers in Denmark",
+      "purpose": "Finance, accounting and controlling roles for international candidates, especially in English-speaking teams.",
+      "fields": ["Finance"],
+      "members": 126,
+      "topics": [
+        "'Danish is an advantage' is not 'Danish required' — read the ad carefully",
+        "Which Danish companies run group finance in English?"
+      ]
+    },
+    {
+      "id": "grp-aarhus",
+      "name": "Aarhus Internationals",
+      "purpose": "Students and graduates in and around Aarhus sharing student jobs, events and everyday advice.",
+      "fields": [],
+      "city": "Aarhus",
+      "members": 212,
+      "topics": [
+        "Student-job fair next week — meet at the entrance?",
+        "How I got my first student job"
+      ]
+    },
+    {
+      "id": "grp-danish",
+      "name": "Danish for Work",
+      "purpose": "Practise workplace Danish and talk honestly about language requirements in job ads.",
+      "fields": [],
+      "members": 248,
+      "topics": [
+        "This week's phrase: 'Har du tid til et kort møde?'",
+        "Did you mention your Danish level in the CV or the interview?"
+      ]
+    },
+    {
+      "id": "grp-newcomers",
+      "name": "Copenhagen Newcomers",
+      "purpose": "Just moved to Denmark for work or study? Meet others in the same situation and get practical tips.",
+      "fields": [],
+      "city": "Copenhagen",
+      "members": 167,
+      "topics": [
+        "Saturday coffee walk around the lakes",
+        "A one-page case study got me more interviews than 50 generic applications"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-data",
+      "groupId": "grp-data",
+      "title": "Breaking into data roles without fluent Danish",
+      "description": "A panel of three analysts who were hired with A1–B1 Danish talk about CVs, portfolios and language questions in interviews.",
+      "daysFromNow": 5,
+      "time": "17:00",
+      "format": "Online"
+    },
+    {
+      "id": "evt-finance",
+      "groupId": "grp-finance",
+      "title": "Finance CV clinic (small group)",
+      "description": "Bring a printed CV. The group is kept small, so everyone gets real feedback.",
+      "daysFromNow": 9,
+      "time": "16:30",
+      "format": "In person",
+      "venue": "Library meeting room 2",
+      "city": "Copenhagen"
+    },
+    {
+      "id": "evt-aarhus",
+      "groupId": "grp-aarhus",
+      "title": "Aarhus Internationals: autumn meetup",
+      "description": "Short intros, then open networking.",
+      "daysFromNow": 3,
+      "time": "18:00",
+      "format": "In person",
+      "venue": "Student house café",
+      "city": "Aarhus"
+    },
+    {
+      "id": "evt-danish",
+      "groupId": "grp-danish",
+      "title": "Danish for job interviews — practice session",
+      "description": "Practise the ten most common interview questions in small groups. All levels from A2 are welcome.",
+      "daysFromNow": 12,
+      "time": "17:30",
+      "format": "Hybrid",
+      "venue": "Community centre, room B",
+      "city": "Copenhagen"
+    },
+    {
+      "id": "evt-newcomers",
+      "groupId": "grp-newcomers",
+      "title": "Newcomers coffee walk around the lakes",
+      "description": "A relaxed walk followed by coffee. No agenda, just a chance to meet people.",
+      "daysFromNow": 6,
+      "time": "11:00",
+      "format": "In person",
+      "venue": "Meeting point: the lakes, north end",
+      "city": "Copenhagen"
+    }
+  ]
+}

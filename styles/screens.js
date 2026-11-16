@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { colors, spacing, typography, radius, hairline, shadow } from './tokens';
+import { colors, spacing, typography, radius, hairline, touchTarget, shadow } from './tokens';
 
 // Styles, som kun én skærm bruger. Alt det fælles ligger i components.js.
 export const screenStyles = StyleSheet.create({
@@ -22,6 +22,26 @@ export const screenStyles = StyleSheet.create({
   // Noten over listen står som en stille billedtekst.
   exploreNote: {
     marginBottom: spacing.lg,
+  },
+  // Velkomstkortet ved første åbning
+  introTitle: {
+    fontSize: typography.size.lg,
+    lineHeight: typography.lineHeight.lg,
+    fontWeight: typography.weight.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  // "Browse first" er en stille tekstknap, så den ikke konkurrerer med hovedhandlingen.
+  textButton: {
+    minHeight: touchTarget,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: spacing.xs,
+  },
+  textButtonText: {
+    fontSize: typography.size.base,
+    fontWeight: typography.weight.semibold,
+    color: colors.textSecondary,
   },
 
   // CAREER CASE (detaljesiden)
@@ -165,5 +185,32 @@ export const screenStyles = StyleSheet.create({
     fontSize: typography.size.base,
     lineHeight: typography.lineHeight.base,
     color: colors.textSecondary,
+  },
+
+  // GROUP (fællesskabssiden)
+  // Gruppens emner vises som simple rækker med en tynd linje imellem.
+  topicRow: {
+    paddingVertical: spacing.md,
+  },
+  // Første række står tæt under overskriften, som de andre sektioner.
+  topicRowFirst: {
+    paddingTop: 0,
+  },
+  topicDivider: {
+    borderTopWidth: hairline,
+    borderTopColor: colors.border,
+  },
+  topicText: {
+    fontSize: typography.size.base,
+    lineHeight: typography.lineHeight.base,
+    color: colors.textPrimary,
+  },
+  eventDescription: {
+    marginTop: spacing.md,
+  },
+  // Bekræftelsen efter "Attend (demo)" står samme sted som knappen.
+  rsvpConfirmation: {
+    marginTop: spacing.lg,
+    marginBottom: 0,
   },
 });

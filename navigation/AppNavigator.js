@@ -9,11 +9,12 @@ import JobSeekerProfileScreen from '../screens/JobSeekerProfileScreen';
 import ContributeScreen from '../screens/ContributeScreen';
 import CareerCaseScreen from '../screens/CareerCaseScreen';
 import AboutScreen from '../screens/AboutScreen';
+import GroupScreen from '../screens/GroupScreen';
 import { colors } from '../styles/tokens';
 import { ui } from '../styles/components';
 
 // Navigationen består af to lag:
-// 1. En Stack Navigator yderst, som indeholder tabs, CareerCase og About.
+// 1. En Stack Navigator yderst, som indeholder tabs, CareerCase, Group og About.
 // 2. En Bottom Tab Navigator med appens fire hovedområder.
 // CareerCase ligger i stakken, så den samme detaljeside kan åbnes fra både
 // Explore og People Like Me, og tilbage-pilen altid fører til den rigtige tab.
@@ -110,6 +111,14 @@ export default function AppNavigator() {
 
       {/* Detaljesiden bruges både fra Explore og People Like Me. */}
       <Stack.Screen name="CareerCase" component={CareerCaseScreen} options={{ title: 'Career Case' }} />
+
+      {/* Fællesskabssiden åbnes fra "Next step"-kortet. Titlen er gruppens navn,
+          som sendes med i navigationens params. */}
+      <Stack.Screen
+        name="Group"
+        component={GroupScreen}
+        options={({ route }) => ({ title: route.params?.groupName || 'Community' })}
+      />
 
       <Stack.Screen name="About" component={AboutScreen} options={{ title: 'About Coreliance' }} />
     </Stack.Navigator>

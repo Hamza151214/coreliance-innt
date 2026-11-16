@@ -396,6 +396,35 @@ export const ui = StyleSheet.create({
     color: colors.textPrimary,
   },
 
+  // NEXT STEP (fællesskabskortet på detaljesiden og under People Like Me)
+  // Kortet genbruger section-stilen. Gruppens navn står som kortets titel.
+  nextStepLead: {
+    fontSize: typography.size.base,
+    lineHeight: typography.lineHeight.base,
+    color: colors.textSecondary,
+    marginBottom: spacing.md,
+  },
+  nextStepGroupName: {
+    fontSize: typography.size.lg,
+    lineHeight: typography.lineHeight.lg,
+    fontWeight: typography.weight.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  // Eventet står under en tynd skillelinje, ligesom match-forklaringen på CareerCard.
+  nextStepEvent: {
+    marginTop: spacing.md,
+    paddingTop: spacing.md,
+    borderTopWidth: hairline,
+    borderTopColor: colors.border,
+  },
+  eventTitle: {
+    fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
+    fontWeight: typography.weight.semibold,
+    color: colors.textPrimary,
+  },
+
   // TILSTANDE (indlæsning, ingen profil, samtykke, fejl)
   // Indholdet står centreret midt på skærmen: titel, forklaring og én handling.
   centeredState: {

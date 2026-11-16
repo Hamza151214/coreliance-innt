@@ -3,8 +3,14 @@ import { View, Text, FlatList, Pressable, ActivityIndicator } from 'react-native
 import { useFocusEffect } from '@react-navigation/native';
 
 import CareerCard from '../components/CareerCard';
+import NextSteps from '../components/NextSteps';
 import { loadProfile, giveAiConsent } from '../services/profileService';
-import { loadCachedMatches, requestMatches, getProfileSignature } from '../services/matchingService';
+import {
+  loadCachedMatches,
+  requestMatches,
+  getProfileSignature,
+  getDemoMatches,
+} from '../services/matchingService';
 import { colors } from '../styles/tokens';
 import { ui } from '../styles/components';
 
@@ -17,6 +23,10 @@ export default function PeopleLikeMeScreen({ navigation }) {
   const [cache, setCache] = useState(null);
   const [isMatching, setIsMatching] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Demo-matches ligger i deres egen state og aldrig i "cache".
+  // Så kan de ikke overskrive rigtige AI-matches, og de bliver aldrig gemt.
+  const [demoResults, setDemoResults] = useState(null);
 
   // En ref ændrer sig med det samme, i modsætning til state.
   // Den forhindrer to OpenAI-kald, hvis brugeren trykker hurtigt to gange.
@@ -60,6 +70,8 @@ export default function PeopleLikeMeScreen({ navigation }) {
 
     try {
       setCache(await requestMatches(profileToMatch));
+      // Rigtige matches erstatter eventuelle eksempler på skærmen.
+      setDemoResults(null);
     } catch (error) {
       // De gamle matches beholdes, så en fejl ikke sletter gyldige resultater.
       setErrorMessage(error.message);
@@ -68,6 +80,31 @@ export default function PeopleLikeMeScreen({ navigation }) {
       setIsMatching(false);
     }
   };
+
+  // Bruges kun, når AI-matchingen er fejlet, så en præsentation stadig kan vise funktionen.
+  // Eksemplerne er forudskrevne og ikke lavet ud fra brugerens profil.
+  const showDemoMatches = async () => {
+    try {
+      setDemoResults(await getDemoMatches());
+      setErrorMessage('');
+    } catch (error) {
+      setErrorMessage('The example matches could not be loaded.');
+    }
+  };
+
+  // Knap og forklaring til eksemplerne. Vises sammen med en fejlbesked.
+  const demoOffer = (
+    <>
+      <Pressable
+        style={({ pressed }) => [ui.secondaryButton, pressed && ui.buttonPressed]}
+        onPress={showDemoMatches}
+        accessibilityRole="button"
+      >
+        <Text style={ui.secondaryButtonText}>Show example matches</Text>
+      </Pressable>
+      <Text style={ui.stateCaption}>Precomputed examples — not AI and not based on your profile.</Text>
+    </>
+  );
 
   const acceptConsent = async () => {
     try {
@@ -172,8 +209,8 @@ export default function PeopleLikeMeScreen({ navigation }) {
     );
   }
 
-  // Samtykke er givet, men der findes ingen gyldige gemte matches.
-  if (!cache) {
+  // Samtykke er givet, men der findes ingen gyldige gemte matches (og ingen eksempler vises).
+  if (!cache && !demoResults) {
     return (
       <View style={[ui.screen, ui.centeredState]}>
         <Text style={ui.stateTitle}>Ready to find people like you</Text>
@@ -198,46 +235,72 @@ export default function PeopleLikeMeScreen({ navigation }) {
         </Pressable>
 
         {errorMessage ? (
-          <View style={[ui.messageBox, ui.messageError, ui.stateMessage]}>
-            <Text style={ui.messageText}>{errorMessage}</Text>
-          </View>
+          <>
+            <View style={[ui.messageBox, ui.messageError, ui.stateMessage]}>
+              <Text style={ui.messageText}>{errorMessage}</Text>
+            </View>
+            {demoOffer}
+          </>
         ) : null}
       </View>
     );
   }
 
+  // Skærmen viser enten eksempler eller rigtige AI-matches med samme liste.
+  const isDemo = Boolean(demoResults);
+  const results = isDemo ? demoResults : cache;
+
   // Matches er forældede, hvis de profilfelter, AI'en brugte, er ændret siden.
-  const isOutdated = cache.profileSignature !== getProfileSignature(profile);
+  // Eksempler er ikke lavet ud fra profilen, så de kan ikke blive forældede.
+  const isOutdated = !isDemo && cache.profileSignature !== getProfileSignature(profile);
 
   let refreshLabel = 'Refresh matches';
 
   if (isMatching) {
     refreshLabel = 'Finding new matches…';
+  } else if (isDemo) {
+    refreshLabel = 'Try AI matching again';
   } else if (isOutdated) {
     refreshLabel = 'Update matches';
   }
 
   const openMatch = (match) => {
-    navigation.navigate('CareerCase', { careerCase: match.careerCase, match: match });
+    navigation.navigate('CareerCase', { careerCase: match.careerCase, match: match, isDemo: isDemo });
   };
 
   return (
     <FlatList
       style={ui.screen}
-      data={cache.matches}
+      data={results.matches}
       keyExtractor={(item) => item.careerCaseId}
       contentContainerStyle={ui.listContent}
       showsVerticalScrollIndicator={false}
       ListHeaderComponent={
         <View style={ui.listHeader}>
-          <Text style={ui.accentLabel}>AI-powered matching</Text>
-          <Text style={[ui.bodyText, ui.textSpacing]}>
-            Fictional career stories that may be relevant to your goal: {profile.desiredRoles}.
-          </Text>
-          <Text style={[ui.caption, ui.textSpacing]}>
-            Generated by OpenAI on {new Date(cache.createdAt).toLocaleDateString()}. AI can
-            make mistakes, and the results say nothing about your chances of being hired.
-          </Text>
+          {/* Eksempler markeres tydeligt, så de aldrig ligner rigtige AI-resultater */}
+          {isDemo ? (
+            <>
+              <View style={[ui.messageBox, ui.messageInfo]}>
+                <Text style={ui.messageText}>
+                  Example matches for demonstration — not AI-generated
+                </Text>
+              </View>
+              <Text style={[ui.caption, ui.textSpacing]}>
+                Precomputed examples — not AI and not based on your profile.
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={ui.accentLabel}>AI-powered matching</Text>
+              <Text style={[ui.bodyText, ui.textSpacing]}>
+                Fictional career stories that may be relevant to your goal: {profile.desiredRoles}.
+              </Text>
+              <Text style={[ui.caption, ui.textSpacing]}>
+                Generated by OpenAI on {new Date(cache.createdAt).toLocaleDateString()}. AI can
+                make mistakes, and the results say nothing about your chances of being hired.
+              </Text>
+            </>
+          )}
 
           {isOutdated ? (
             <View style={[ui.messageBox, ui.messageInfo]}>
@@ -250,10 +313,13 @@ export default function PeopleLikeMeScreen({ navigation }) {
           {errorMessage ? (
             <View style={[ui.messageBox, ui.messageError]}>
               <Text style={ui.messageText}>
-                {errorMessage} Your previous matches are still shown.
+                {errorMessage}
+                {isDemo ? '' : ' Your previous matches are still shown.'}
               </Text>
             </View>
           ) : null}
+
+          {errorMessage && !isDemo ? demoOffer : null}
 
           <Pressable
             style={({ pressed }) => [
@@ -270,6 +336,14 @@ export default function PeopleLikeMeScreen({ navigation }) {
             </Text>
           </Pressable>
         </View>
+      }
+      ListFooterComponent={
+        <NextSteps
+          fields={profile.industries}
+          city={profile.preferredLocation}
+          navigation={navigation}
+          origin="matches"
+        />
       }
       ListEmptyComponent={
         <View style={ui.section}>
