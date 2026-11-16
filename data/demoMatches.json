@@ -1,0 +1,53 @@
+[
+  {
+    "careerCaseId": "case02",
+    "relevance": "Strong match",
+    "summary": "They had no network in Denmark and got few replies at first. Their public data projects became the main topic in their interviews.",
+    "similarities": [
+      "Like many international graduates, they started their job search in Denmark without a professional network.",
+      "They applied in English and did not speak Danish when they were hired."
+    ],
+    "differences": [
+      "They have a technical MSc in Data Science from DTU, which may differ from your education.",
+      "They found the job through the company career page, not through a referral."
+    ],
+    "lessons": [
+      "Build one or two small projects on data that Danish employers care about, and link them at the top of your CV.",
+      "Replace generic applications with examples of real work you can talk about in an interview."
+    ]
+  },
+  {
+    "careerCaseId": "case01",
+    "relevance": "Possible match",
+    "summary": "They were turned down by Danish-language finance roles and changed focus to English-speaking teams. Their student job gave them their strongest reference.",
+    "similarities": [
+      "They studied in Denmark and had limited Danish (A2) during their job search.",
+      "They faced job ads that asked for fluent Danish."
+    ],
+    "differences": [
+      "Their background is in finance and accounting, which may not be your field.",
+      "They had 18 months of relevant student job experience before applying."
+    ],
+    "lessons": [
+      "Target companies with English-speaking teams instead of sending many applications to Danish-language roles.",
+      "Treat your student job as real experience and ask your manager to be a reference."
+    ]
+  },
+  {
+    "careerCaseId": "case10",
+    "relevance": "Possible match",
+    "summary": "They changed career from mechanical engineering to a business analyst role. A LinkedIn post and informal coffee meetings led to a referral.",
+    "similarities": [
+      "They had to explain how earlier experience fits a new kind of role, which many job seekers find hard.",
+      "They had only basic Danish (A1) when they were hired."
+    ],
+    "differences": [
+      "They had three years of work experience as an engineer before their master's.",
+      "They were hired through a referral, which depends on the network you build."
+    ],
+    "lessons": [
+      "Connect your past experience to the role you want in one clear sentence.",
+      "Ask a few people in your target field for short, informal coffee meetings."
+    ]
+  }
+]

@@ -64,6 +64,13 @@ function readJsonBody(request) {
 const server = http.createServer(async (request, response) => {
   setCorsHeaders(request, response);
 
+  // En kort log-linje pr. request (metode, sti, status og tid). Body logges aldrig,
+  // fordi den indeholder brugerens profil.
+  const startedAt = Date.now();
+  response.on('finish', () => {
+    console.log(`${request.method} ${request.url} ${response.statusCode} ${Date.now() - startedAt}ms`);
+  });
+
   if (request.method === 'OPTIONS') {
     response.writeHead(204);
     response.end();
@@ -71,8 +78,13 @@ const server = http.createServer(async (request, response) => {
   }
 
   // Et simpelt tjek, så man kan se om serveren kører: http://localhost:3001/health
+  // Viser kun om der er en nøgle og hvilken model der bruges, aldrig selve nøglen.
   if (request.method === 'GET' && request.url === '/health') {
-    sendJson(response, 200, { ok: true, hasApiKey: Boolean(process.env.OPENAI_API_KEY) });
+    sendJson(response, 200, {
+      ok: true,
+      hasApiKey: Boolean(process.env.OPENAI_API_KEY),
+      model: process.env.OPENAI_MODEL || 'gpt-5-mini',
+    });
     return;
   }
 

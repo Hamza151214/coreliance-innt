@@ -146,3 +146,33 @@ test('CORS is only allowed for localhost origins', async () => {
   assert.strictEqual(local.headers.get('access-control-allow-origin'), 'http://localhost:8081');
   assert.strictEqual(other.headers.get('access-control-allow-origin'), null);
 });
+
+test('/health reports the model name but never the API key', async () => {
+  const response = await fetch(`${baseUrl}/health`);
+  const data = await response.json();
+
+  assert.strictEqual(data.ok, true);
+  assert.strictEqual(data.model, process.env.OPENAI_MODEL || 'gpt-5-mini');
+  assert.ok(!JSON.stringify(data).includes('test-key'));
+});
+
+// Demo-matches vises, hvis OpenAI er nede under en præsentation.
+// Testen sikrer, at filen passer til datasættet og har samme form som et AI-svar.
+test('data/demoMatches.json has 3 valid matches that point to real cases', () => {
+  const demoMatches = require('../data/demoMatches.json');
+  const careerCases = require('../data/careerCases.json');
+  const isFilledList = (value) =>
+    Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'string' && item.trim() !== '');
+
+  assert.strictEqual(demoMatches.length, 3);
+  assert.strictEqual(new Set(demoMatches.map((match) => match.careerCaseId)).size, 3);
+
+  demoMatches.forEach((match) => {
+    assert.ok(careerCases[match.careerCaseId], `unknown case id ${match.careerCaseId}`);
+    assert.ok(['Strong match', 'Possible match'].includes(match.relevance));
+    assert.ok(typeof match.summary === 'string' && match.summary.trim() !== '');
+    assert.ok(isFilledList(match.similarities));
+    assert.ok(isFilledList(match.differences));
+    assert.ok(isFilledList(match.lessons));
+  });
+});

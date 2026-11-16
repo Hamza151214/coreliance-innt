@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 
 import { getCareerCases } from './careerCaseService';
 import { EMPTY_PROFILE } from '../data/jobSeekerProfile';
+import DEMO_MATCHES from '../data/demoMatches.json';
 
 // People Like Me-matching med OpenAI gennem den lokale server (server/index.js).
 // Appen kender ikke OpenAI-nøglen; den ligger kun i server/.env.
@@ -146,4 +147,17 @@ export async function requestMatches(profile) {
   await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(cache));
 
   return { ...cache, matches: await attachCareerCases(cache.matches) };
+}
+
+// Demo-matches til nødstilfælde: tre faste, forudskrevne eksempler fra data/demoMatches.json.
+// De findes, så en live-præsentation stadig kan vise funktionen, hvis OpenAI eller
+// den lokale server er nede. De er IKKE lavet ud fra brugerens profil, så UI'et skal
+// tydeligt markere dem som demo (isDemo: true). De gemmes aldrig i match-cachen,
+// så de aldrig senere kan blive vist, som om de var rigtige AI-resultater.
+export async function getDemoMatches() {
+  return {
+    isDemo: true,
+    createdAt: new Date().toISOString(),
+    matches: await attachCareerCases(DEMO_MATCHES),
+  };
 }

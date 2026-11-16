@@ -100,6 +100,7 @@ function cleanProfile(profile) {
   return cleaned;
 }
 
+// Casene kommer fra appens egen lokale JSON-fil og ikke fra brugeren, så dem stoler jeg på og forkorter ikke.
 function casesForPrompt() {
   return Object.entries(CAREER_CASES).map(([id, careerCase]) => ({
     careerCaseId: id,
