@@ -110,6 +110,20 @@ export const ui = StyleSheet.create({
     marginBottom: spacing.md,
     ...shadow.card,
   },
+  // Farvede varianter af en sektion. De lægges oven på "section",
+  // så man kan se, hvad slags indhold kassen indeholder.
+  sectionMatch: {
+    backgroundColor: colors.infoBg,
+    borderColor: colors.infoBorder,
+  },
+  sectionCommunity: {
+    backgroundColor: colors.communityBg,
+    borderColor: colors.communityBorder,
+  },
+  sectionAdvice: {
+    backgroundColor: colors.adviceBg,
+    borderColor: colors.adviceBorder,
+  },
   // Lille overskrift med store bogstaver øverst i en sektion.
   sectionTitle: {
     fontSize: typography.size.xs,
@@ -206,12 +220,33 @@ export const ui = StyleSheet.create({
     color: colors.accent,
   },
 
+  // FELT-MÆRKE: en farvet prik og feltets navn, fx "● Data & Analytics".
+  // Selve farven sættes i komponenten med getFieldColor fra tokens.
+  fieldRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  fieldDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: spacing.sm,
+  },
+  fieldText: {
+    fontSize: typography.size.xs,
+    lineHeight: typography.lineHeight.xs,
+    fontWeight: typography.weight.semibold,
+    letterSpacing: 0.3,
+  },
+
   // Forklaringen på et match, som vises inde i CareerCard (People Like Me)
+  // Lyseblå flade, så AI-indhold har samme farve overalt i appen.
   matchBox: {
     marginTop: spacing.md,
-    paddingTop: spacing.md,
-    borderTopWidth: hairline,
-    borderTopColor: colors.border,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    backgroundColor: colors.infoBg,
   },
   matchReason: {
     fontSize: typography.size.base,
@@ -252,11 +287,11 @@ export const ui = StyleSheet.create({
     fontSize: typography.size.md,
     fontWeight: typography.weight.semibold,
   },
+  // Den sekundære knap har en lys blå flade, så den ser tydeligt anderledes ud
+  // end den navy hovedknap, uden at konkurrere med den.
   secondaryButton: {
     minHeight: touchTarget,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.borderStrong,
+    backgroundColor: colors.infoBg,
     paddingHorizontal: spacing.lg,
     borderRadius: radius.md,
     justifyContent: 'center',
@@ -264,7 +299,7 @@ export const ui = StyleSheet.create({
     marginTop: spacing.md,
   },
   secondaryButtonText: {
-    color: colors.navy,
+    color: colors.accent,
     fontSize: typography.size.md,
     fontWeight: typography.weight.semibold,
   },
@@ -404,7 +439,24 @@ export const ui = StyleSheet.create({
   },
 
   // NEXT STEP (fællesskabskortet på detaljesiden og under People Like Me)
-  // Kortet genbruger section-stilen. Gruppens navn står som kortets titel.
+  // Kortet genbruger section-stilen med den grønne fællesskabsfarve.
+  nextStepKicker: {
+    color: colors.communityText,
+  },
+  // "View group" er en lille grøn knap, så det er tydeligt, at kortet fører videre.
+  nextStepButton: {
+    marginLeft: 'auto',
+    paddingHorizontal: spacing.md,
+    paddingVertical: 6,
+    borderRadius: radius.md,
+    backgroundColor: colors.communityText,
+  },
+  nextStepButtonText: {
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    fontWeight: typography.weight.semibold,
+    color: colors.white,
+  },
   nextStepLead: {
     fontSize: typography.size.base,
     lineHeight: typography.lineHeight.base,
@@ -423,7 +475,7 @@ export const ui = StyleSheet.create({
     marginTop: spacing.md,
     paddingTop: spacing.md,
     borderTopWidth: hairline,
-    borderTopColor: colors.border,
+    borderTopColor: colors.communityBorder,
   },
   eventTitle: {
     fontSize: typography.size.md,

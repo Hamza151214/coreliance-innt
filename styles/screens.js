@@ -4,23 +4,56 @@ import { colors, spacing, typography, radius, hairline, touchTarget, shadow } fr
 
 // Styles, som kun én skærm bruger. Alt det fælles ligger i components.js.
 export const screenStyles = StyleSheet.create({
-  // EXPLORE: filterrækken øverst
-  // Jeg giver hele filterområdet en fast højde,
-  // så filterknapperne ikke pludselig kan vokse vertikalt.
-  // flexShrink: 0 er nødvendig på web: ellers presser listen nedenunder rækken sammen,
-  // så knapperne bliver skåret over.
-  filterList: {
-    flexGrow: 0,
-    flexShrink: 0,
-    height: 60,
+  // EXPLORE: filterknappen øverst
+  // En hvid bjælke med det valgte felt. Den folder en liste ud, når man trykker.
+  filterBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: touchTarget + 4,
+    paddingHorizontal: spacing.lg,
     backgroundColor: colors.surface,
     borderBottomWidth: hairline,
     borderBottomColor: colors.border,
   },
-  // alignItems sørger for at alle filterknapper ligger centreret vertikalt.
-  filterListContent: {
+  filterBarLabel: {
+    fontSize: typography.size.sm,
+    color: colors.textMuted,
+    marginRight: spacing.sm,
+  },
+  filterBarValue: {
+    flex: 1,
+    fontSize: typography.size.md,
+    fontWeight: typography.weight.semibold,
+    color: colors.textPrimary,
+  },
+  // Listen med felter står som rækker under bjælken i stedet for mange små knapper.
+  filterPanel: {
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.xs,
+    borderBottomWidth: hairline,
+    borderBottomColor: colors.border,
+  },
+  filterOption: {
+    flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 40,
     paddingHorizontal: spacing.lg,
+  },
+  filterOptionActive: {
+    backgroundColor: colors.background,
+  },
+  filterOptionText: {
+    flex: 1,
+    fontSize: typography.size.base,
+    color: colors.textSecondary,
+  },
+  filterOptionTextActive: {
+    fontWeight: typography.weight.semibold,
+    color: colors.textPrimary,
+  },
+  filterOptionCount: {
+    fontSize: typography.size.sm,
+    color: colors.textMuted,
   },
   // Noten over listen står som en stille billedtekst.
   exploreNote: {
@@ -70,10 +103,53 @@ export const screenStyles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.sm,
   },
-  // AI-forklaringen skiller sig roligt ud med en blå kant i venstre side.
-  matchSection: {
-    borderLeftWidth: 3,
-    borderLeftColor: colors.accent,
+  // Nøgletallene står som tre lige brede felter ved siden af hinanden.
+  // Negativ margin opvejer felternes egen margin, så rækken flugter med kasserne nedenunder.
+  statRow: {
+    flexDirection: 'row',
+    marginHorizontal: -spacing.xs,
+    marginBottom: spacing.md,
+  },
+  statTile: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: hairline,
+    borderColor: colors.border,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
+    marginHorizontal: spacing.xs,
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: typography.size.xxl,
+    lineHeight: typography.lineHeight.xxl,
+    fontWeight: typography.weight.bold,
+    color: colors.navy,
+  },
+  statLabel: {
+    fontSize: typography.size.xs,
+    lineHeight: typography.lineHeight.xs,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+  // Overskrift i normal skrift (ikke grå versaler), så kasserne ikke ligner hinanden så meget.
+  blockTitle: {
+    fontSize: typography.size.lg,
+    lineHeight: typography.lineHeight.lg,
+    fontWeight: typography.weight.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
+  },
+  adviceKicker: {
+    color: colors.adviceText,
+    marginBottom: spacing.sm,
+  },
+  // CV-knappen er en stille tekstknap nederst i profilkassen.
+  cvLink: {
+    minHeight: touchTarget,
+    justifyContent: 'center',
+    marginTop: spacing.sm,
   },
   // Forklaringen under "View CV" står lidt fra knappen og afslutter kortet uden ekstra luft.
   cvNote: {
@@ -108,12 +184,7 @@ export const screenStyles = StyleSheet.create({
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
-  // Rådet vises som et citat med en navy streg i venstre side.
-  adviceBlock: {
-    borderLeftWidth: 2,
-    borderLeftColor: colors.navy,
-    paddingLeft: spacing.md,
-  },
+  // Rådet vises som et citat i den sandfarvede kasse.
   adviceQuote: {
     fontSize: typography.size.md,
     lineHeight: typography.lineHeight.md + 2,

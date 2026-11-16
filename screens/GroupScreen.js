@@ -81,8 +81,8 @@ export default function GroupScreen({ route }) {
 
       {/* Gruppens næste event med en demo-knap til tilmelding */}
       {event ? (
-        <View style={ui.section}>
-          <Text style={ui.sectionTitle}>Upcoming event</Text>
+        <View style={[ui.section, ui.sectionCommunity]}>
+          <Text style={[ui.sectionTitle, ui.nextStepKicker]}>Upcoming event</Text>
           <Text style={[ui.eventTitle, ui.textSpacing]}>{event.title}</Text>
 
           <DetailRow label="When" value={event.dateText} />

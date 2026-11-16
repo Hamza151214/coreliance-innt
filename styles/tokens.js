@@ -35,7 +35,37 @@ export const colors = {
   errorText: '#B42318',
   infoBg: '#EEF3FD',
   infoBorder: '#CFDDF8',
+
+  // Rolige farver med hver sin betydning, så man kan se forskel på indholdet:
+  // grøn = næste skridt og fællesskab, sand = råd fra personen i casen.
+  // AI-matching bruger info-farverne ovenfor (blå).
+  communityBg: '#EEF7F3',
+  communityBorder: '#CBE6DA',
+  communityText: '#1B6B50',
+  adviceBg: '#FBF6EC',
+  adviceBorder: '#EEDFC0',
+  adviceText: '#8A5A12',
 };
+
+// Hvert felt (branche) har sin egen afdæmpede farve.
+// Farven bruges til en lille prik og feltets navn, ikke til hele kort,
+// så listen bliver lettere at skimme uden at blive farverig.
+export const fieldColors = {
+  Finance: '#2F5BD3',
+  'Data & Analytics': '#0E7C86',
+  Consulting: '#6941C6',
+  'Marketing & Communication': '#C4320A',
+  'IT & Software': '#175CD3',
+  'Sales & Business Development': '#B54708',
+  'Design & UX': '#C11574',
+  'Supply Chain & Operations': '#3B7C0F',
+  'Public Sector & NGOs': '#475467',
+};
+
+// Felter uden en farve får den grå tekstfarve.
+export function getFieldColor(field) {
+  return fieldColors[field] || colors.textSecondary;
+}
 
 // Afstande bygger på 4/8-systemet, så luften mellem elementer er ensartet.
 export const spacing = {

@@ -44,12 +44,12 @@ export default function NextSteps({ fields = [], city = '', navigation, origin =
 
   return (
     <Pressable
-      style={({ pressed }) => [ui.section, pressed && ui.cardPressed]}
+      style={({ pressed }) => [ui.section, ui.sectionCommunity, pressed && ui.buttonPressed]}
       onPress={openGroup}
       accessibilityRole="button"
       accessibilityLabel={`Next step: ${group.name}`}
     >
-      <Text style={ui.sectionTitle}>Next step</Text>
+      <Text style={[ui.sectionTitle, ui.nextStepKicker]}>Next step</Text>
       <Text style={ui.nextStepLead}>{LEADS[origin] || LEADS.case}</Text>
 
       <Text style={ui.nextStepGroupName}>{group.name}</Text>
@@ -60,7 +60,7 @@ export default function NextSteps({ fields = [], city = '', navigation, origin =
       {/* Gruppens næste event som én kort linje under en skillelinje */}
       {event ? (
         <View style={ui.nextStepEvent}>
-          <Text style={ui.accentLabel}>Upcoming event</Text>
+          <Text style={[ui.accentLabel, ui.nextStepKicker]}>Upcoming event</Text>
           <Text style={ui.eventTitle}>{event.title}</Text>
           <Text style={ui.cardMeta}>
             {[event.dateText, event.format, event.city].filter(Boolean).join(' · ')}
@@ -70,7 +70,9 @@ export default function NextSteps({ fields = [], city = '', navigation, origin =
 
       <View style={ui.cardFooter}>
         <Text style={ui.fictionalTag}>{group.members} members · Simulated demo community</Text>
-        <Text style={ui.viewCase}>View group →</Text>
+        <View style={ui.nextStepButton}>
+          <Text style={ui.nextStepButtonText}>View group →</Text>
+        </View>
       </View>
     </Pressable>
   );

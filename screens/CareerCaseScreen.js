@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 
+import FieldTag from '../components/FieldTag';
 import NextSteps from '../components/NextSteps';
 import { ui } from '../styles/components';
 import { screenStyles } from '../styles/screens';
@@ -42,6 +43,14 @@ export default function CareerCaseScreen({ route, navigation }) {
 
   const referral = careerCase.referral === null ? null : careerCase.referral ? 'Yes' : 'No';
 
+  // Nøgletallene vises som tre små felter øverst, så de kan læses med ét blik.
+  // Tal, der mangler, springes over.
+  const stats = [
+    { label: 'Applications', value: careerCase.applications },
+    { label: 'Interviews', value: careerCase.interviews },
+    { label: 'Months searching', value: careerCase.monthsSearching },
+  ].filter((stat) => stat.value !== null && stat.value !== undefined);
+
   return (
     <ScrollView
       style={ui.screen}
@@ -50,10 +59,11 @@ export default function CareerCaseScreen({ route, navigation }) {
     >
       {/* Overordnet information om jobbet */}
       <View style={screenStyles.detailHeader}>
+        <FieldTag field={careerCase.field} />
         <Text style={screenStyles.detailTitle}>{careerCase.jobTitle}</Text>
 
         <Text style={screenStyles.detailSubtitle}>
-          {[careerCase.employerType, careerCase.location, careerCase.field].filter(Boolean).join(' · ')}
+          {[careerCase.employerType, careerCase.location].filter(Boolean).join(' · ')}
         </Text>
 
         {careerCase.isFictional ? (
@@ -63,13 +73,25 @@ export default function CareerCaseScreen({ route, navigation }) {
         ) : null}
       </View>
 
-      {/* Forklaring på matchet – kun når casen er åbnet fra People Like Me */}
+      {/* Jobsøgningen i tal */}
+      {stats.length > 0 ? (
+        <View style={screenStyles.statRow}>
+          {stats.map((stat) => (
+            <View key={stat.label} style={screenStyles.statTile}>
+              <Text style={screenStyles.statValue}>{stat.value}</Text>
+              <Text style={screenStyles.statLabel}>{stat.label}</Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+
+      {/* Forklaring på matchet – kun når casen er åbnet fra People Like Me. Blå = AI-matching. */}
       {match ? (
-        <View style={[ui.section, screenStyles.matchSection]}>
+        <View style={[ui.section, ui.sectionMatch]}>
           <Text style={[ui.accentLabel, screenStyles.matchLabel]}>
             {isDemo ? 'Example match, not AI-generated' : 'AI-powered matching'} · {match.relevance}
           </Text>
-          <Text style={ui.sectionTitle}>Why this case was suggested</Text>
+          <Text style={screenStyles.blockTitle}>Why this case was suggested</Text>
 
           {match.summary ? <Text style={[ui.bodyText, ui.textSpacing]}>{match.summary}</Text> : null}
           <BulletList items={match.similarities} />
@@ -90,99 +112,68 @@ export default function CareerCaseScreen({ route, navigation }) {
         </View>
       ) : null}
 
-      {/* Personens baggrund på det tidspunkt jobbet blev søgt */}
-      <View style={ui.section}>
-        <Text style={ui.sectionTitle}>Background</Text>
-        <DetailRow label="University" value={careerCase.university} />
-        <DetailRow label="Degree" value={careerCase.degree} />
-        <DetailRow label="Danish level" value={careerCase.danishLevel} />
-      </View>
-
-      {/* Personens egen fortælling */}
-      {careerCase.story ? (
-        <View style={ui.section}>
-          <Text style={ui.sectionTitle}>Their story</Text>
-          <Text style={ui.bodyText}>{careerCase.story}</Text>
+      {/* Personens eget råd står højt oppe, fordi det er det mest brugbare. Sand = råd. */}
+      {careerCase.advice ? (
+        <View style={[ui.section, ui.sectionAdvice]}>
+          <Text style={[ui.sectionTitle, screenStyles.adviceKicker]}>Their advice</Text>
+          <Text style={screenStyles.adviceQuote}>“{careerCase.advice}”</Text>
         </View>
       ) : null}
 
-      {/* Tidligere erfaring før jobbet */}
+      {/* Personens fortælling: hvad var svært, og hvad virkede */}
+      {careerCase.story || careerCase.challenges || careerCase.strategy ? (
+        <View style={ui.section}>
+          <Text style={screenStyles.blockTitle}>Their journey</Text>
+          {careerCase.story ? <Text style={ui.bodyText}>{careerCase.story}</Text> : null}
+
+          {careerCase.challenges ? (
+            <>
+              <Text style={ui.subsectionTitle}>Biggest challenges</Text>
+              <Text style={ui.bodyText}>{careerCase.challenges}</Text>
+            </>
+          ) : null}
+
+          {careerCase.strategy ? (
+            <>
+              <Text style={ui.subsectionTitle}>What worked</Text>
+              <Text style={ui.bodyText}>{careerCase.strategy}</Text>
+            </>
+          ) : null}
+        </View>
+      ) : null}
+
+      {/* Baggrund og resultat samlet i én kasse i stedet for fire små */}
       <View style={ui.section}>
-        <Text style={ui.sectionTitle}>At the time of application</Text>
-        <BulletList items={careerCase.previousExperience} />
+        <Text style={screenStyles.blockTitle}>Profile</Text>
+        <DetailRow label="University" value={careerCase.university} />
+        <DetailRow label="Degree" value={careerCase.degree} />
+        <DetailRow label="Danish level" value={careerCase.danishLevel} />
+        <DetailRow label="Result" value={careerCase.outcome} />
+        <DetailRow label="How they got it" value={careerCase.jobRoute} />
+        <DetailRow label="Referral" value={referral} />
+        <DetailRow label="Offers" value={careerCase.offers} />
+
+        {careerCase.previousExperience.length > 0 ? (
+          <>
+            <Text style={ui.subsectionTitle}>Experience at the time</Text>
+            <BulletList items={careerCase.previousExperience} />
+          </>
+        ) : null}
 
         {careerCase.skills.length > 0 ? (
           <>
             <Text style={ui.subsectionTitle}>Skills</Text>
-            <BulletList items={careerCase.skills} />
-          </>
-        ) : null}
-      </View>
-
-      {/* Nøgletal for jobsøgningen */}
-      <View style={ui.section}>
-        <Text style={ui.sectionTitle}>Job Search</Text>
-        <DetailRow label="Applications" value={careerCase.applications} />
-        <DetailRow label="Interviews" value={careerCase.interviews} />
-        <DetailRow label="Offers" value={careerCase.offers} />
-        <DetailRow label="Months searching" value={careerCase.monthsSearching} />
-
-        {careerCase.challenges ? (
-          <>
-            <Text style={ui.subsectionTitle}>Biggest challenges</Text>
-            <Text style={ui.bodyText}>{careerCase.challenges}</Text>
+            <Text style={ui.bodyText}>{careerCase.skills.join(', ')}</Text>
           </>
         ) : null}
 
-        {careerCase.strategy ? (
-          <>
-            <Text style={ui.subsectionTitle}>What worked</Text>
-            <Text style={ui.bodyText}>{careerCase.strategy}</Text>
-          </>
-        ) : null}
-      </View>
-
-      {/* Resultatet af jobsøgningen */}
-      <View style={ui.section}>
-        <Text style={ui.sectionTitle}>Outcome</Text>
-        <DetailRow label="Result" value={careerCase.outcome} />
-        <DetailRow label="Role" value={careerCase.jobTitle} />
-        <DetailRow label="How they got it" value={careerCase.jobRoute} />
-        <DetailRow label="Referral" value={referral} />
-      </View>
-
-      {/* Personens eget råd til andre internationale */}
-      {careerCase.advice ? (
-        <View style={ui.section}>
-          <Text style={ui.sectionTitle}>Advice</Text>
-          <View style={screenStyles.adviceBlock}>
-            <Text style={screenStyles.adviceQuote}>“{careerCase.advice}”</Text>
-          </View>
-        </View>
-      ) : null}
-
-      {/* Et konkret næste skridt: et (fiktivt) fællesskab for samme felt eller by */}
-      <NextSteps
-        fields={[careerCase.field]}
-        city={careerCase.location}
-        navigation={navigation}
-        origin="case"
-      />
-
-      {/* CV-knappen er kun en placeholder i prototypen */}
-      <View style={ui.section}>
-        <Text style={ui.sectionTitle}>CV Snapshot</Text>
-
-        <Text style={ui.bodyText}>
-          In a full version, you could see an anonymised CV used for this application.
-        </Text>
-
+        {/* CV-knappen er kun en placeholder i prototypen, så den er en stille tekstknap */}
         <Pressable
-          style={({ pressed }) => [ui.secondaryButton, pressed && ui.buttonPressed]}
+          style={({ pressed }) => [screenStyles.cvLink, pressed && ui.buttonPressed]}
           onPress={() => setShowCvNote(true)}
           accessibilityRole="button"
         >
-          <Text style={ui.secondaryButtonText}>View CV</Text>
+          <Text style={ui.viewCase}>View anonymised CV</Text>
         </Pressable>
 
         {showCvNote ? (
@@ -191,6 +182,14 @@ export default function CareerCaseScreen({ route, navigation }) {
           </View>
         ) : null}
       </View>
+
+      {/* Et konkret næste skridt: et (fiktivt) fællesskab for samme felt eller by. Grøn = fællesskab. */}
+      <NextSteps
+        fields={[careerCase.field]}
+        city={careerCase.location}
+        navigation={navigation}
+        origin="case"
+      />
     </ScrollView>
   );
 }

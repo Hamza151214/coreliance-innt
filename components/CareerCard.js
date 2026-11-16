@@ -1,4 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
+import FieldTag from './FieldTag';
 import { ui } from '../styles/components';
 
 // Samler de felter, der findes, med " · " og springer tomme felter over.
@@ -25,6 +26,9 @@ export default function CareerCard({ careerCase, onPress, children }) {
       onPress={onPress}
       accessibilityRole="button"
     >
+      {/* Feltet står øverst med sin egen farve, så listen er let at skimme */}
+      <FieldTag field={careerCase.field} />
+
       {/* Øverste række: jobtitel og et lille badge der viser outcome (fx HIRED) */}
       <View style={ui.cardTopRow}>
         <Text style={ui.cardTitle}>{careerCase.jobTitle}</Text>
