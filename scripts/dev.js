@@ -12,7 +12,8 @@ const server = spawn(process.execPath, ['--env-file-if-exists=server/.env', 'ser
   env: { ...process.env, HOST: process.env.HOST || '0.0.0.0' },
 });
 
-const expo = spawn('npx', ['expo', 'start'], {
+// --clear tømmer Metros cache, så telefonen altid får den nyeste version af koden.
+const expo = spawn('npx', ['expo', 'start', '--clear'], {
   stdio: 'inherit',
   shell: process.platform === 'win32',
 });
