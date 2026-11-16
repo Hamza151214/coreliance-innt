@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
+import { useState } from 'react';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 
 import NextSteps from '../components/NextSteps';
 import { ui } from '../styles/components';
@@ -36,9 +37,8 @@ export default function CareerCaseScreen({ route, navigation }) {
   const { careerCase, match, isDemo } = route.params;
 
   // Prototypen har ingen CV-filer. Knappen viser derfor kun en forklaring.
-  const showCV = () => {
-    Alert.alert('CV Snapshot', 'CV snapshots are not part of this prototype.');
-  };
+  // Forklaringen står i skærmen i stedet for i en Alert, fordi Alert ikke virker på web.
+  const [showCvNote, setShowCvNote] = useState(false);
 
   const referral = careerCase.referral === null ? null : careerCase.referral ? 'Yes' : 'No';
 
@@ -66,7 +66,7 @@ export default function CareerCaseScreen({ route, navigation }) {
       {/* Forklaring på matchet – kun når casen er åbnet fra People Like Me */}
       {match ? (
         <View style={[ui.section, screenStyles.matchSection]}>
-          <Text style={ui.accentLabel}>
+          <Text style={[ui.accentLabel, screenStyles.matchLabel]}>
             {isDemo ? 'Example match, not AI-generated' : 'AI-powered matching'} · {match.relevance}
           </Text>
           <Text style={ui.sectionTitle}>Why this case was suggested</Text>
@@ -179,11 +179,17 @@ export default function CareerCaseScreen({ route, navigation }) {
 
         <Pressable
           style={({ pressed }) => [ui.secondaryButton, pressed && ui.buttonPressed]}
-          onPress={showCV}
+          onPress={() => setShowCvNote(true)}
           accessibilityRole="button"
         >
           <Text style={ui.secondaryButtonText}>View CV</Text>
         </Pressable>
+
+        {showCvNote ? (
+          <View style={[ui.messageBox, ui.messageInfo, screenStyles.cvNote]}>
+            <Text style={ui.messageText}>CV snapshots are not part of this prototype.</Text>
+          </View>
+        ) : null}
       </View>
     </ScrollView>
   );

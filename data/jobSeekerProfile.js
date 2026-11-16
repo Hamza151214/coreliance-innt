@@ -38,7 +38,7 @@ export const PROFILE_SECTIONS = [
         key: 'degree',
         label: 'Degree and field of study',
         required: true,
-        placeholder: 'e.g. MSc Business Administration and Data Science',
+        placeholder: 'e.g. MSc Business Administration',
       },
       {
         key: 'danishLevel',

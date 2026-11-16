@@ -49,6 +49,7 @@ function MainTabs() {
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: ui.tabBar,
         tabBarLabelStyle: ui.tabBarLabel,
+        tabBarIconStyle: ui.tabBarIcon,
 
         // Jeg skjuler tab-baren, når tastaturet er åbent, så formularerne får mere plads.
         tabBarHideOnKeyboard: true,

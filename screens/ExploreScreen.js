@@ -104,7 +104,7 @@ export default function ExploreScreen({ navigation }) {
             {/* Kort velkomst ved første åbning: hvad appen kan, og én tydelig næste handling */}
             {showIntro ? (
               <View style={ui.section}>
-                <Text style={screenStyles.introTitle}>Welcome to CoReliance</Text>
+                <Text style={screenStyles.introTitle}>Welcome to Coreliance</Text>
                 <Text style={ui.bodyText}>
                   See how other internationals found jobs in Denmark — then let AI find the
                   stories most relevant to you.

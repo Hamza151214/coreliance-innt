@@ -50,8 +50,15 @@ export const ui = StyleSheet.create({
     borderTopColor: colors.border,
     elevation: 0,
   },
+  // Hver tab har kun 38 punkter til ikon og tekst. Biblioteket giver ikonet en 28 høj
+  // ramme, så teksten blev skåret af i bunden. Med 24 er der præcis plads til begge.
+  tabBarIcon: {
+    height: spacing.xl,
+  },
+  // Fast linjehøjde, så bogstaver som "p" og "y" ikke bliver skåret af i bunden på web.
   tabBarLabel: {
     fontSize: typography.size.xxs,
+    lineHeight: typography.lineHeight.xxs,
     fontWeight: typography.weight.medium,
   },
 

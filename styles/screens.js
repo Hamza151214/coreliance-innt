@@ -7,8 +7,11 @@ export const screenStyles = StyleSheet.create({
   // EXPLORE: filterrækken øverst
   // Jeg giver hele filterområdet en fast højde,
   // så filterknapperne ikke pludselig kan vokse vertikalt.
+  // flexShrink: 0 er nødvendig på web: ellers presser listen nedenunder rækken sammen,
+  // så knapperne bliver skåret over.
   filterList: {
     flexGrow: 0,
+    flexShrink: 0,
     height: 60,
     backgroundColor: colors.surface,
     borderBottomWidth: hairline,
@@ -71,6 +74,15 @@ export const screenStyles = StyleSheet.create({
   matchSection: {
     borderLeftWidth: 3,
     borderLeftColor: colors.accent,
+  },
+  // Forklaringen under "View CV" står lidt fra knappen og afslutter kortet uden ekstra luft.
+  cvNote: {
+    marginTop: spacing.md,
+    marginBottom: 0,
+  },
+  // Lidt mere luft mellem AI-mærket og overskriften, så de ikke flyder sammen.
+  matchLabel: {
+    marginBottom: spacing.sm,
   },
   // Label til venstre og værdi til højre.
   detailRow: {

@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import {
+  View,
   Text,
   ScrollView,
   Pressable,
-  Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -53,6 +53,10 @@ export default function ContributeScreen() {
   // Hele formularen ligger i ét state-objekt, fx { currentRole: '', field: '' }.
   const [form, setForm] = useState(EMPTY_FORM);
 
+  // Beskeden vises i selve skærmen i stedet for med Alert, fordi Alert ikke virker
+  // i web-versionen. Det er det samme mønster som på My Profile.
+  const [message, setMessage] = useState(null);
+
   const updateField = (key, value) => {
     setForm((previous) => ({ ...previous, [key]: value }));
   };
@@ -72,18 +76,22 @@ export default function ContributeScreen() {
     );
 
     if (isMissingRequired) {
-      Alert.alert(
-        'Missing information',
-        'Please fill in your current role, university and degree.'
-      );
+      setMessage({
+        type: 'error',
+        text: 'Please fill in your current role, university and degree.',
+      });
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
 
       return;
     }
 
     // Formularen er kun en demo. Beskeden siger derfor ærligt, at intet er sendt.
-    Alert.alert('Thank you!', 'This is a demo, so your answers were not saved or sent.');
+    setMessage({
+      type: 'success',
+      text: 'Thank you! This is a demo, so your answers were not saved or sent.',
+    });
 
-    // Jeg nulstiller formularen og scroller tilbage til toppen.
+    // Jeg nulstiller formularen og scroller tilbage til toppen, hvor beskeden står.
     setForm(EMPTY_FORM);
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
@@ -104,6 +112,17 @@ export default function ContributeScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
       >
+        {message ? (
+          <View
+            style={[
+              ui.messageBox,
+              message.type === 'success' ? ui.messageSuccess : ui.messageError,
+            ]}
+          >
+            <Text style={ui.messageText}>{message.text}</Text>
+          </View>
+        ) : null}
+
         <Text style={[ui.bodyText, ui.textSpacing]}>
           Already working in Denmark? This form shows how you could share your
           experience to help other international students.

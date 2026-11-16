@@ -10,6 +10,13 @@ cloud database, no user accounts and no hosting.
 | Career cases | `services/careerCaseService.js` | `getCareerCases()` |
 | Matching (client) | `services/matchingService.js` | `requestMatches(profile)` → `POST /match`, `loadCachedMatches()`, `getProfileSignature(profile)` |
 | Matching (server) | `server/index.js`, `server/matching.js` | `POST /match { profile }` → `{ model, matches }` |
+| Demo fallback | `services/matchingService.js`, `data/demoMatches.json` | `getDemoMatches()` → `{ isDemo: true, matches }` |
+| Next steps (community) | `services/nextStepsService.js`, `data/nextSteps.json` | `getNextStep({ fields, city })`, `getGroupWithEvent(groupId)` |
+| First-launch intro | `services/onboardingService.js` | `loadIntroSeen()`, `markIntroSeen()` |
+
+Styling is split into `styles/tokens.js` (colors, spacing, typography, radii — the only file
+with color values), `styles/components.js` (`ui`, shared styles) and `styles/screens.js`
+(`screenStyles`, screen-specific).
 
 ## Job seeker profile
 
@@ -55,6 +62,18 @@ later, replace the body of `getCareerCases()` and make the server read the same 
    Explore and People Like Me) shows the explanation when it receives `match`.
 
 Match format: `{ careerCaseId, careerCase, relevance, summary, similarities[], differences[], lessons[] }`.
+
+**Demo fallback:** when a matching request fails, the user can explicitly press "Show example
+matches" (`getDemoMatches()`), which shows 3 precomputed examples from `data/demoMatches.json`.
+They are banner-labeled as not AI-generated (also on the case detail), are never written to the
+match cache, and never replace cached real results. The OpenAI client uses `maxRetries: 1`.
+
+**Next steps / community:** `components/NextSteps.js` renders one group + event suggestion on the
+case detail and under the match list, chosen by field overlap, then city (Aarhus region /
+Copenhagen), then a general fallback. `screens/GroupScreen.js` ('Group' route) shows the group,
+its upcoming event (date computed from `daysFromNow`) and discussion topics — all fictional and
+labeled simulated; the RSVP button is local state only. AsyncStorage also holds
+`coreliance:introSeen` for the dismissible Explore intro card.
 
 The server returns these error codes, each shown to the user with a retry button:
 - `missing_api_key` (500)

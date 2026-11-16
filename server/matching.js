@@ -155,7 +155,9 @@ async function matchProfile(profile) {
   }
 
   const model = process.env.OPENAI_MODEL || 'gpt-5-mini';
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 60000 });
+  // maxRetries: 1, så et fejlet kald højst sendes to gange i alt.
+  // SDK'ets standard er 2 ekstra forsøg, hvilket kan blive dyrt mod det rigtige API.
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 60000, maxRetries: 1 });
 
   const request = {
     model,
