@@ -3,7 +3,8 @@ import { View, Text, FlatList, Pressable } from 'react-native';
 
 import CareerCard from '../components/CareerCard';
 import { getCareerCases } from '../services/careerCaseService';
-import { styles } from '../styles/styles';
+import { ui } from '../styles/components';
+import { screenStyles } from '../styles/screens';
 
 export default function ExploreScreen({ navigation }) {
   // Jeg henter career cases gennem careerCaseService,
@@ -46,10 +47,12 @@ export default function ExploreScreen({ navigation }) {
 
     return (
       <Pressable
-        style={[styles.filterButton, isActive && styles.filterButtonActive]}
+        style={[ui.pill, isActive && ui.pillActive]}
         onPress={() => setSelectedFilter(item)}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isActive }}
       >
-        <Text numberOfLines={1} style={[styles.filterText, isActive && styles.filterTextActive]}>
+        <Text numberOfLines={1} style={[ui.pillText, isActive && ui.pillTextActive]}>
           {item}
         </Text>
       </Pressable>
@@ -57,7 +60,7 @@ export default function ExploreScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.screen}>
+    <View style={ui.screen}>
       {/* Jeg bruger en separat horizontal FlatList til filtrene. */}
       <FlatList
         data={filters}
@@ -65,8 +68,8 @@ export default function ExploreScreen({ navigation }) {
         keyExtractor={(item) => item}
         renderItem={renderFilter}
         showsHorizontalScrollIndicator={false}
-        style={styles.filterList}
-        contentContainerStyle={styles.filterListContent}
+        style={screenStyles.filterList}
+        contentContainerStyle={screenStyles.filterListContent}
       />
 
       {/* Appens hovedliste med de career cases, der passer til det valgte filter. */}
@@ -74,9 +77,9 @@ export default function ExploreScreen({ navigation }) {
         data={filteredCases}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={ui.listContent}
         ListHeaderComponent={
-          <Text style={styles.noteText}>
+          <Text style={[ui.caption, screenStyles.exploreNote, loadFailed && ui.errorText]}>
             {loadFailed
               ? 'Career cases could not be loaded.'
               : 'All career cases are fictional demonstration profiles made for this academic prototype.'}

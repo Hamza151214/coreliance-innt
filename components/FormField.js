@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Pressable } from 'react-native';
 
-import { styles } from '../styles/styles';
+import { colors } from '../styles/tokens';
+import { ui } from '../styles/components';
 
 // FormField viser ét felt i en formular: label, eventuel hjælpetekst,
 // selve inputtet og en fejlbesked.
@@ -26,29 +27,27 @@ export default function FormField({ field, value, onChange, error, onFocus }) {
 
   return (
     <View>
-      <Text style={styles.inputLabel}>
+      <Text style={ui.inputLabel}>
         {field.label}
         {field.required ? ' *' : ''}
       </Text>
 
-      {field.hint ? <Text style={styles.inputHint}>{field.hint}</Text> : null}
+      {field.hint ? <Text style={ui.inputHint}>{field.hint}</Text> : null}
 
       {field.options ? (
-        <View style={styles.choiceRow}>
+        <View style={ui.choiceRow}>
           {field.options.map((option) => {
             const isActive = isSelected(option);
 
             return (
               <Pressable
                 key={option}
-                style={[
-                  styles.filterButton,
-                  styles.choiceButton,
-                  isActive && styles.filterButtonActive,
-                ]}
+                style={[ui.pill, ui.choiceButton, isActive && ui.pillActive]}
                 onPress={() => toggleOption(option)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isActive }}
               >
-                <Text style={[styles.filterText, isActive && styles.filterTextActive]}>
+                <Text style={[ui.pillText, isActive && ui.pillTextActive]}>
                   {option}
                 </Text>
               </Pressable>
@@ -58,11 +57,12 @@ export default function FormField({ field, value, onChange, error, onFocus }) {
       ) : (
         <TextInput
           style={[
-            styles.textInput,
-            field.multiline && styles.textInputMultiline,
-            error && styles.inputError,
+            ui.textInput,
+            field.multiline && ui.textInputMultiline,
+            error && ui.inputError,
           ]}
           placeholder={field.placeholder}
+          placeholderTextColor={colors.textMuted}
           keyboardType={field.keyboardType}
           maxLength={field.maxLength || (field.multiline ? 1000 : 150)}
           multiline={field.multiline}
@@ -72,7 +72,7 @@ export default function FormField({ field, value, onChange, error, onFocus }) {
         />
       )}
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={ui.errorText}>{error}</Text> : null}
     </View>
   );
 }

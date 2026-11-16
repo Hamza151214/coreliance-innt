@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import FormField from '../components/FormField';
-import { styles } from '../styles/styles';
+import { ui } from '../styles/components';
 
 // Denne formular er til personer, der ALLEREDE har fået job.
 // Det er en lokal demo: indholdet bliver ikke sendt eller gemt nogen steder.
@@ -90,7 +90,7 @@ export default function ContributeScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
+      style={ui.keyboardAvoidingView}
       // På iOS bruger jeg padding, så tastaturet ikke lægger sig oven på formularen.
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       // Offset tager højde for headeren øverst i appen.
@@ -98,20 +98,22 @@ export default function ContributeScreen() {
     >
       <ScrollView
         ref={scrollViewRef}
-        style={styles.screen}
-        contentContainerStyle={styles.formContainer}
+        style={ui.screen}
+        contentContainerStyle={ui.formContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
       >
-        <Text style={styles.formIntro}>
+        <Text style={[ui.bodyText, ui.textSpacing]}>
           Already working in Denmark? This form shows how you could share your
           experience to help other international students.
         </Text>
 
-        <Text style={styles.noteText}>
-          Demo form: nothing you enter here is saved or sent anywhere.
-        </Text>
+        <View style={[ui.messageBox, ui.messageInfo]}>
+          <Text style={ui.messageText}>
+            Demo form: nothing you enter here is saved or sent anywhere.
+          </Text>
+        </View>
 
         {CONTRIBUTE_FIELDS.map((field) => (
           <FormField
@@ -123,8 +125,12 @@ export default function ContributeScreen() {
           />
         ))}
 
-        <Pressable style={styles.primaryButton} onPress={submitCareerCase}>
-          <Text style={styles.primaryButtonText}>Submit career case</Text>
+        <Pressable
+          style={({ pressed }) => [ui.primaryButton, ui.formSubmit, pressed && ui.buttonPressed]}
+          onPress={submitCareerCase}
+          accessibilityRole="button"
+        >
+          <Text style={ui.primaryButtonText}>Submit career case</Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

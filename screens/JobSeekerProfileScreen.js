@@ -14,7 +14,9 @@ import FormField from '../components/FormField';
 import { PROFILE_SECTIONS, EMPTY_PROFILE, validateProfile } from '../data/jobSeekerProfile';
 import { loadProfile, saveProfile } from '../services/profileService';
 import { getProfileSignature } from '../services/matchingService';
-import { styles } from '../styles/styles';
+import { colors } from '../styles/tokens';
+import { ui } from '../styles/components';
+import { screenStyles } from '../styles/screens';
 
 // My Profile har to tilstande:
 // - Visning: den gemte profil vises med en knap til at redigere.
@@ -124,22 +126,22 @@ export default function JobSeekerProfileScreen({ navigation }) {
 
   if (isLoading) {
     return (
-      <View style={[styles.screen, styles.centeredState]}>
-        <ActivityIndicator />
+      <View style={[ui.screen, ui.centeredState]}>
+        <ActivityIndicator size="large" color={colors.navy} />
       </View>
     );
   }
 
   return (
     <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
+      style={ui.keyboardAvoidingView}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
     >
       <ScrollView
         ref={scrollViewRef}
-        style={styles.screen}
-        contentContainerStyle={styles.formContainer}
+        style={ui.screen}
+        contentContainerStyle={ui.formContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
@@ -147,21 +149,21 @@ export default function JobSeekerProfileScreen({ navigation }) {
         {message ? (
           <View
             style={[
-              styles.messageBox,
-              message.type === 'success' ? styles.messageSuccess : styles.messageError,
+              ui.messageBox,
+              message.type === 'success' ? ui.messageSuccess : ui.messageError,
             ]}
           >
-            <Text style={styles.messageText}>{message.text}</Text>
+            <Text style={ui.messageText}>{message.text}</Text>
           </View>
         ) : null}
 
-        <Text style={styles.formIntro}>
+        <Text style={[ui.bodyText, ui.textSpacing]}>
           {isEditing
             ? 'A few short questions about who you are and what you are looking for. It takes about 3 minutes.'
             : 'This is the profile the AI uses to find people like you.'}
         </Text>
 
-        <Text style={styles.noteText}>
+        <Text style={[ui.caption, screenStyles.profileNote]}>
           Your profile is saved only on this device. When you ask for AI matches and have
           given consent, your answers are sent to OpenAI through the local Coreliance server.
         </Text>
@@ -170,7 +172,7 @@ export default function JobSeekerProfileScreen({ navigation }) {
           <>
             {PROFILE_SECTIONS.map((section) => (
               <View key={section.title}>
-                <Text style={styles.formSectionTitle}>{section.title}</Text>
+                <Text style={ui.formSectionTitle}>{section.title}</Text>
 
                 {section.fields.map((field) => (
                   <FormField
@@ -184,15 +186,28 @@ export default function JobSeekerProfileScreen({ navigation }) {
               </View>
             ))}
 
-            <Text style={styles.noteText}>Fields marked * are required.</Text>
+            <Text style={[ui.caption, screenStyles.requiredNote]}>Fields marked * are required.</Text>
 
-            <Pressable style={styles.primaryButton} onPress={handleSave} disabled={isSaving}>
-              <Text style={styles.primaryButtonText}>{isSaving ? 'Saving…' : 'Save profile'}</Text>
+            <Pressable
+              style={({ pressed }) => [
+                ui.primaryButton,
+                pressed && ui.buttonPressed,
+                isSaving && ui.buttonDisabled,
+              ]}
+              onPress={handleSave}
+              disabled={isSaving}
+              accessibilityRole="button"
+            >
+              <Text style={ui.primaryButtonText}>{isSaving ? 'Saving…' : 'Save profile'}</Text>
             </Pressable>
 
             {savedProfile ? (
-              <Pressable style={styles.secondaryButton} onPress={cancelEditing}>
-                <Text style={styles.secondaryButtonText}>Cancel</Text>
+              <Pressable
+                style={({ pressed }) => [ui.secondaryButton, pressed && ui.buttonPressed]}
+                onPress={cancelEditing}
+                accessibilityRole="button"
+              >
+                <Text style={ui.secondaryButtonText}>Cancel</Text>
               </Pressable>
             ) : null}
           </>
@@ -200,29 +215,43 @@ export default function JobSeekerProfileScreen({ navigation }) {
           <>
             {/* Visning af den gemte profil, sektion for sektion */}
             {PROFILE_SECTIONS.map((section) => (
-              <View key={section.title} style={styles.profileSection}>
-                <Text style={styles.sectionTitle}>{section.title}</Text>
+              <View key={section.title} style={ui.section}>
+                <Text style={[ui.sectionTitle, screenStyles.profileSectionTitle]}>{section.title}</Text>
 
-                {section.fields.map((field) => {
+                {/* Label over værdi, med en tynd linje mellem hvert svar */}
+                {section.fields.map((field, index) => {
                   const value = savedProfile[field.key];
                   const text = Array.isArray(value) ? value.join(', ') : value;
 
                   return (
-                    <View key={field.key} style={styles.profileItem}>
-                      <Text style={styles.profileLabel}>{field.label}</Text>
-                      <Text style={styles.profileValue}>{text || 'Not answered'}</Text>
+                    <View
+                      key={field.key}
+                      style={[screenStyles.profileItem, index > 0 && screenStyles.profileItemDivider]}
+                    >
+                      <Text style={screenStyles.profileLabel}>{field.label}</Text>
+                      <Text style={[screenStyles.profileValue, !text && screenStyles.profileValueEmpty]}>
+                        {text || 'Not answered'}
+                      </Text>
                     </View>
                   );
                 })}
               </View>
             ))}
 
-            <Pressable style={styles.primaryButton} onPress={startEditing}>
-              <Text style={styles.primaryButtonText}>Edit profile</Text>
+            <Pressable
+              style={({ pressed }) => [ui.primaryButton, pressed && ui.buttonPressed]}
+              onPress={startEditing}
+              accessibilityRole="button"
+            >
+              <Text style={ui.primaryButtonText}>Edit profile</Text>
             </Pressable>
 
-            <Pressable style={styles.secondaryButton} onPress={() => navigation.navigate('PeopleLikeMe')}>
-              <Text style={styles.secondaryButtonText}>See people like me</Text>
+            <Pressable
+              style={({ pressed }) => [ui.secondaryButton, pressed && ui.buttonPressed]}
+              onPress={() => navigation.navigate('PeopleLikeMe')}
+              accessibilityRole="button"
+            >
+              <Text style={ui.secondaryButtonText}>See people like me</Text>
             </Pressable>
           </>
         )}

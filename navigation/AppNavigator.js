@@ -9,7 +9,8 @@ import JobSeekerProfileScreen from '../screens/JobSeekerProfileScreen';
 import ContributeScreen from '../screens/ContributeScreen';
 import CareerCaseScreen from '../screens/CareerCaseScreen';
 import AboutScreen from '../screens/AboutScreen';
-import { styles, colors } from '../styles/styles';
+import { colors } from '../styles/tokens';
+import { ui } from '../styles/components';
 
 // Navigationen består af to lag:
 // 1. En Stack Navigator yderst, som indeholder tabs, CareerCase og About.
@@ -17,11 +18,13 @@ import { styles, colors } from '../styles/styles';
 // CareerCase ligger i stakken, så den samme detaljeside kan åbnes fra både
 // Explore og People Like Me, og tilbage-pilen altid fører til den rigtige tab.
 
-// Header-design, som både stakken og tabs bruger. Farver og tekst ligger i styles.js.
+// Header-design, som både stakken og tabs bruger. Farver og tekst ligger i styles-mappen.
 const headerOptions = {
-  headerStyle: styles.header,
+  headerStyle: ui.header,
   headerTintColor: colors.white,
-  headerTitleStyle: styles.headerTitle,
+  headerTitleStyle: ui.headerTitle,
+  // Headeren er allerede navy, så den behøver ikke en skygge nedenunder.
+  headerShadowVisible: false,
 };
 
 // Ikon til hver tab. Den aktive tab får det fyldte ikon,
@@ -43,7 +46,8 @@ function MainTabs() {
         ...headerOptions,
         tabBarActiveTintColor: colors.navy,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: ui.tabBar,
+        tabBarLabelStyle: ui.tabBarLabel,
 
         // Jeg skjuler tab-baren, når tastaturet er åbent, så formularerne får mere plads.
         tabBarHideOnKeyboard: true,
@@ -58,9 +62,10 @@ function MainTabs() {
         // så vi undgår fem tabs i bunden.
         headerRight: () => (
           <Pressable
-            style={styles.headerIconButton}
+            style={ui.headerIconButton}
             onPress={() => navigation.navigate('About')}
             accessibilityLabel="About Coreliance"
+            accessibilityRole="button"
           >
             <Ionicons name="information-circle-outline" size={24} color={colors.white} />
           </Pressable>

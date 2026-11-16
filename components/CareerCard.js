@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
-import { styles } from '../styles/styles';
+import { ui } from '../styles/components';
 
 // Samler de felter, der findes, med " · " og springer tomme felter over.
 function joinParts(parts) {
@@ -20,45 +20,50 @@ export default function CareerCard({ careerCase, onPress, children }) {
       : careerCase.danishLevel;
 
   return (
-    <Pressable style={styles.card} onPress={onPress}>
-      {/* Øverste række: jobtitel og et badge der viser outcome (fx HIRED) */}
-      <View style={styles.cardTopRow}>
-        <Text style={styles.cardTitle}>{careerCase.jobTitle}</Text>
-        <View style={styles.cardBadge}>
-          <Text style={styles.cardBadgeText}>{careerCase.outcome}</Text>
+    <Pressable
+      style={({ pressed }) => [ui.card, pressed && ui.cardPressed]}
+      onPress={onPress}
+      accessibilityRole="button"
+    >
+      {/* Øverste række: jobtitel og et lille badge der viser outcome (fx HIRED) */}
+      <View style={ui.cardTopRow}>
+        <Text style={ui.cardTitle}>{careerCase.jobTitle}</Text>
+        <View style={ui.badge}>
+          <Text style={ui.badgeText}>{careerCase.outcome}</Text>
         </View>
       </View>
 
       {/* Universitet og uddannelse */}
-      <Text style={styles.cardSubtitle}>
+      <Text style={ui.cardSubtitle}>
         {joinParts([careerCase.university, careerCase.degree])}
       </Text>
 
-      {/* Type arbejdsgiver, by og dansk-niveau */}
-      <Text style={styles.cardMeta}>
+      {/* Type arbejdsgiver, by og dansk-niveau som én stille meta-linje */}
+      <Text style={ui.cardMeta}>
         {joinParts([careerCase.employerType, careerCase.location, danish])}
       </Text>
 
       {/* Nøgletal om jobsøgningen vises kun, hvis de findes */}
       {careerCase.applications !== null && careerCase.interviews !== null ? (
-        <View style={styles.cardStatsRow}>
-          <Text style={styles.cardStat}>
-            <Text style={styles.cardStatValue}>{careerCase.applications}</Text> applications
+        <View style={ui.cardFacts}>
+          <Text style={ui.cardFact}>
+            <Text style={ui.cardFactValue}>{careerCase.applications}</Text> applications
           </Text>
-          <Text style={styles.cardStat}>
-            <Text style={styles.cardStatValue}>{careerCase.interviews}</Text> interviews
+          <Text style={ui.cardFact}>
+            <Text style={ui.cardFactValue}>{careerCase.interviews}</Text> interviews
           </Text>
         </View>
       ) : null}
 
       {children}
 
-      {careerCase.isFictional ? (
-        <Text style={styles.fictionalTag}>Fictional demonstration profile</Text>
-      ) : null}
-
-      {/* Tydelig "View case"-tekst der signalerer at kortet er klikbart */}
-      <Text style={styles.viewCase}>View case →</Text>
+      {/* Bunden af kortet: "fiktiv"-noten og en tydelig "View case", der viser at kortet kan trykkes på */}
+      <View style={ui.cardFooter}>
+        {careerCase.isFictional ? (
+          <Text style={ui.fictionalTag}>Fictional demonstration profile</Text>
+        ) : null}
+        <Text style={ui.viewCase}>View case →</Text>
+      </View>
     </Pressable>
   );
 }

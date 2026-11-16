@@ -10,7 +10,8 @@ export default function App() {
     <NavigationContainer>
       {/* AppNavigator styrer al vores navigation (bottom tabs + stack) */}
       <AppNavigator />
-      <StatusBar style="auto" />
+      {/* Lys tekst i statuslinjen, fordi headeren er mørk navy */}
+      <StatusBar style="light" />
     </NavigationContainer>
   );
 }

@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
 
-import { styles } from '../styles/styles';
+import { ui } from '../styles/components';
+import { screenStyles } from '../styles/screens';
 
 // Én række med label og værdi. Hvis værdien mangler, vises rækken ikke,
 // så ufuldstændige cases ikke viser tomme felter.
@@ -10,9 +11,9 @@ function DetailRow({ label, value }) {
   }
 
   return (
-    <View style={styles.detailRow}>
-      <Text style={styles.detailLabel}>{label}</Text>
-      <Text style={styles.detailValue}>{value}</Text>
+    <View style={screenStyles.detailRow}>
+      <Text style={screenStyles.detailLabel}>{label}</Text>
+      <Text style={screenStyles.detailValue}>{value}</Text>
     </View>
   );
 }
@@ -20,7 +21,7 @@ function DetailRow({ label, value }) {
 // En simpel punktliste, som bruges til erfaring, skills og match-forklaringer.
 function BulletList({ items }) {
   return items.map((item, index) => (
-    <Text key={index} style={styles.bulletItem}>
+    <Text key={index} style={screenStyles.bulletItem}>
       • {item}
     </Text>
   ));
@@ -40,17 +41,21 @@ export default function CareerCaseScreen({ route }) {
   const referral = careerCase.referral === null ? null : careerCase.referral ? 'Yes' : 'No';
 
   return (
-    <ScrollView style={styles.screen} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={ui.screen}
+      contentContainerStyle={ui.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Overordnet information om jobbet */}
-      <View style={styles.detailHeader}>
-        <Text style={styles.detailTitle}>{careerCase.jobTitle}</Text>
+      <View style={screenStyles.detailHeader}>
+        <Text style={screenStyles.detailTitle}>{careerCase.jobTitle}</Text>
 
-        <Text style={styles.detailSubtitle}>
+        <Text style={screenStyles.detailSubtitle}>
           {[careerCase.employerType, careerCase.location, careerCase.field].filter(Boolean).join(' · ')}
         </Text>
 
         {careerCase.isFictional ? (
-          <Text style={styles.fictionalTag}>
+          <Text style={screenStyles.detailFictional}>
             Fictional demonstration profile, not a real person.
           </Text>
         ) : null}
@@ -58,23 +63,23 @@ export default function CareerCaseScreen({ route }) {
 
       {/* Forklaring på matchet – kun når casen er åbnet fra People Like Me */}
       {match ? (
-        <View style={styles.section}>
-          <Text style={styles.matchLabel}>AI-powered matching · {match.relevance}</Text>
-          <Text style={styles.sectionTitle}>Why this case was suggested</Text>
+        <View style={[ui.section, screenStyles.matchSection]}>
+          <Text style={ui.accentLabel}>AI-powered matching · {match.relevance}</Text>
+          <Text style={ui.sectionTitle}>Why this case was suggested</Text>
 
-          {match.summary ? <Text style={styles.formIntro}>{match.summary}</Text> : null}
+          {match.summary ? <Text style={[ui.bodyText, ui.textSpacing]}>{match.summary}</Text> : null}
           <BulletList items={match.similarities} />
 
           {match.differences.length > 0 ? (
             <>
-              <Text style={styles.subsectionTitle}>Differences to keep in mind</Text>
+              <Text style={ui.subsectionTitle}>Differences to keep in mind</Text>
               <BulletList items={match.differences} />
             </>
           ) : null}
 
           {match.lessons.length > 0 ? (
             <>
-              <Text style={styles.subsectionTitle}>What you could learn</Text>
+              <Text style={ui.subsectionTitle}>What you could learn</Text>
               <BulletList items={match.lessons} />
             </>
           ) : null}
@@ -82,8 +87,8 @@ export default function CareerCaseScreen({ route }) {
       ) : null}
 
       {/* Personens baggrund på det tidspunkt jobbet blev søgt */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Background</Text>
+      <View style={ui.section}>
+        <Text style={ui.sectionTitle}>Background</Text>
         <DetailRow label="University" value={careerCase.university} />
         <DetailRow label="Degree" value={careerCase.degree} />
         <DetailRow label="Danish level" value={careerCase.danishLevel} />
@@ -91,28 +96,28 @@ export default function CareerCaseScreen({ route }) {
 
       {/* Personens egen fortælling */}
       {careerCase.story ? (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Their story</Text>
-          <Text style={styles.formIntro}>{careerCase.story}</Text>
+        <View style={ui.section}>
+          <Text style={ui.sectionTitle}>Their story</Text>
+          <Text style={ui.bodyText}>{careerCase.story}</Text>
         </View>
       ) : null}
 
       {/* Tidligere erfaring før jobbet */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>At the time of application</Text>
+      <View style={ui.section}>
+        <Text style={ui.sectionTitle}>At the time of application</Text>
         <BulletList items={careerCase.previousExperience} />
 
         {careerCase.skills.length > 0 ? (
           <>
-            <Text style={styles.subsectionTitle}>Skills</Text>
+            <Text style={ui.subsectionTitle}>Skills</Text>
             <BulletList items={careerCase.skills} />
           </>
         ) : null}
       </View>
 
       {/* Nøgletal for jobsøgningen */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Job Search</Text>
+      <View style={ui.section}>
+        <Text style={ui.sectionTitle}>Job Search</Text>
         <DetailRow label="Applications" value={careerCase.applications} />
         <DetailRow label="Interviews" value={careerCase.interviews} />
         <DetailRow label="Offers" value={careerCase.offers} />
@@ -120,22 +125,22 @@ export default function CareerCaseScreen({ route }) {
 
         {careerCase.challenges ? (
           <>
-            <Text style={styles.subsectionTitle}>Biggest challenges</Text>
-            <Text style={styles.formIntro}>{careerCase.challenges}</Text>
+            <Text style={ui.subsectionTitle}>Biggest challenges</Text>
+            <Text style={ui.bodyText}>{careerCase.challenges}</Text>
           </>
         ) : null}
 
         {careerCase.strategy ? (
           <>
-            <Text style={styles.subsectionTitle}>What worked</Text>
-            <Text style={styles.formIntro}>{careerCase.strategy}</Text>
+            <Text style={ui.subsectionTitle}>What worked</Text>
+            <Text style={ui.bodyText}>{careerCase.strategy}</Text>
           </>
         ) : null}
       </View>
 
       {/* Resultatet af jobsøgningen */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Outcome</Text>
+      <View style={ui.section}>
+        <Text style={ui.sectionTitle}>Outcome</Text>
         <DetailRow label="Result" value={careerCase.outcome} />
         <DetailRow label="Role" value={careerCase.jobTitle} />
         <DetailRow label="How they got it" value={careerCase.jobRoute} />
@@ -144,22 +149,28 @@ export default function CareerCaseScreen({ route }) {
 
       {/* Personens eget råd til andre internationale */}
       {careerCase.advice ? (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Advice</Text>
-          <Text style={styles.adviceQuote}>“{careerCase.advice}”</Text>
+        <View style={ui.section}>
+          <Text style={ui.sectionTitle}>Advice</Text>
+          <View style={screenStyles.adviceBlock}>
+            <Text style={screenStyles.adviceQuote}>“{careerCase.advice}”</Text>
+          </View>
         </View>
       ) : null}
 
       {/* CV-knappen er kun en placeholder i prototypen */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>CV Snapshot</Text>
+      <View style={ui.section}>
+        <Text style={ui.sectionTitle}>CV Snapshot</Text>
 
-        <Text style={styles.formIntro}>
+        <Text style={ui.bodyText}>
           In a full version, you could see an anonymised CV used for this application.
         </Text>
 
-        <Pressable style={styles.primaryButton} onPress={showCV}>
-          <Text style={styles.primaryButtonText}>View CV</Text>
+        <Pressable
+          style={({ pressed }) => [ui.secondaryButton, pressed && ui.buttonPressed]}
+          onPress={showCV}
+          accessibilityRole="button"
+        >
+          <Text style={ui.secondaryButtonText}>View CV</Text>
         </Pressable>
       </View>
     </ScrollView>
