@@ -6,7 +6,7 @@ Projektet er lavet i React Native med Expo som en del af kurset INNT på CBS. Al
 
 ## Demovideo
 
-_Kommer snart._
+Se en kort demo af appen her: https://youtube.com/shorts/jQIQOdGlwYA?feature=share
 
 ## Hvad kan appen?
 
